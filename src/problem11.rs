@@ -19,12 +19,48 @@ const INPUT: &str = r#"08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 
 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48"#;
 
+const MAX_SIZE: i8 = 20;
+
+#[derive(PartialEq, Debug)]
+struct Pos {
+    row: i8,
+    col: i8,
+}
+
 fn parse_input(input: &str) -> Vec<Vec<usize>> {
     input.lines()
         .map(|line| line.split_whitespace()
-            .filter_map(|s| s.parse::<usize>().ok())
+            .map(str::parse::<usize>)
+            .filter_map(Result::ok)
             .collect())
         .collect()
+}
+
+impl Pos {
+    const fn new(row: i8, col: i8) -> Pos {
+        Pos { row, col }
+    }
+}
+
+fn build_coords(start_pos: &Pos, dr: i8, dc: i8) -> Option<Vec<Pos>> {
+    let mut tmp_vec = Vec::<Pos>::with_capacity(4);
+    (0..4_i8).for_each(|i|
+        tmp_vec.push(
+            Pos::new(
+                start_pos.row + dr * i,
+                start_pos.col + dc * i,
+            )
+        )
+    );
+
+    if tmp_vec.iter()
+        .find(|item| item.row < 0 || item.col < 0
+            || item.row > MAX_SIZE - 1 || item.col > MAX_SIZE - 1)
+        .is_some() {
+        None
+    } else {
+        Some(tmp_vec)
+    }
 }
 
 fn main() {
@@ -41,5 +77,20 @@ mod tests {
         let result = parse_input(input);
 
         assert_eq!(result, [[1, 2], [3, 4]]);
+    }
+
+    #[test]
+    fn test_build_coords() {
+        const START_POS_1: Pos = Pos::new(0, 0);
+        assert_eq!(build_coords(&START_POS_1, 0, 1), Some(vec![Pos::new(0, 0), Pos::new(0, 1), Pos::new(0, 2), Pos::new(0, 3)]));
+        assert_eq!(build_coords(&START_POS_1, 0, -1), None);
+        assert_eq!(build_coords(&START_POS_1, -1, 0), None);
+        assert_eq!(build_coords(&START_POS_1, 1, -1), None);
+        assert_eq!(build_coords(&START_POS_1, 1, 0), Some(vec![Pos::new(0, 0), Pos::new(1, 0), Pos::new(2, 0), Pos::new(3, 0)]));
+        assert_eq!(build_coords(&START_POS_1, 1, 1), Some(vec![Pos::new(0, 0), Pos::new(1, 1), Pos::new(2, 2), Pos::new(3, 3)]));
+
+        const START_POS_2: Pos = Pos::new(MAX_SIZE - 1, MAX_SIZE - 1);
+        assert_eq!(build_coords(&START_POS_2, 0, 1), None);
+        assert_eq!(build_coords(&START_POS_2, -1, -1), Some(vec![Pos::new(MAX_SIZE - 1, MAX_SIZE - 1), Pos::new(MAX_SIZE - 2, MAX_SIZE - 2), Pos::new(MAX_SIZE - 3, MAX_SIZE - 3), Pos::new(MAX_SIZE - 4, MAX_SIZE - 4)]));
     }
 }
