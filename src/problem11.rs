@@ -1,3 +1,5 @@
+use itertools::iproduct;
+
 const INPUT: &str = r#"08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
 81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65
@@ -63,8 +65,38 @@ fn build_coords(start_pos: &Pos, dr: i8, dc: i8) -> Option<Vec<Pos>> {
     }
 }
 
+fn multiply(input: &Vec<Vec<usize>>, coords: &Vec<Pos>) -> usize {
+    dbg!(coords,
+
+    coords.iter()
+        .map(|&Pos { row, col }| input[row as usize][col as usize])
+        .product()).1
+}
+
+fn find_answer() -> Option<usize> {
+    let input = parse_input(INPUT);
+    iproduct!((0..MAX_SIZE),(0..MAX_SIZE))
+        .map(|(row, col)| Pos::new(row, col))
+        .map(|pos|
+            vec![
+                build_coords(&pos, 1, 0),
+                build_coords(&pos, 0, 1),
+                build_coords(&pos, -1, 0),
+                build_coords(&pos, 0, -1),
+                build_coords(&pos, 1, 1),
+                build_coords(&pos, -1, -1),
+                build_coords(&pos, 1, -1),
+                build_coords(&pos, -1, 1),
+            ].into_iter()
+                .filter_map(|coords| coords)
+                .map(|coords| multiply(&input, &coords))
+                .max())
+        .filter_map(|coords| coords)
+        .max()
+}
+
 fn main() {
-    println!("Hello, world from problem 11!");
+    println!("Problem 11. Answer is {}", find_answer().unwrap_or_default());
 }
 
 #[cfg(test)]
@@ -92,5 +124,14 @@ mod tests {
         const START_POS_2: Pos = Pos::new(MAX_SIZE - 1, MAX_SIZE - 1);
         assert_eq!(build_coords(&START_POS_2, 0, 1), None);
         assert_eq!(build_coords(&START_POS_2, -1, -1), Some(vec![Pos::new(MAX_SIZE - 1, MAX_SIZE - 1), Pos::new(MAX_SIZE - 2, MAX_SIZE - 2), Pos::new(MAX_SIZE - 3, MAX_SIZE - 3), Pos::new(MAX_SIZE - 4, MAX_SIZE - 4)]));
+    }
+
+    #[test]
+    fn test_multiply() {
+        const START_POS: Pos = Pos::new(0, 0);
+        let coords: Vec<Pos> = build_coords(&START_POS, 0, 1).unwrap();
+        let input = parse_input(INPUT);
+
+        assert_eq!(multiply(&input, &coords), 8 * 02 * 22 * 97);
     }
 }
