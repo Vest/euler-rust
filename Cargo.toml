@@ -11,3 +11,7 @@ itertools = "*"
 [[bin]]
 name = "problem11"
 path = "src/problem11.rs"
+
+[[bin]]
+name = "problem12"
+path = "src/problem12.rs"
