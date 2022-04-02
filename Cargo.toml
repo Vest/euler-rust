@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 itertools = "*"
+primes = "*"
 
 [[bin]]
 name = "problem11"
