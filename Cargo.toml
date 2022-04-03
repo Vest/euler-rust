@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 itertools = "*"
+num-bigint = "*"
 primes = "*"
 
 [[bin]]
@@ -16,3 +17,7 @@ path = "src/problem11.rs"
 [[bin]]
 name = "problem12"
 path = "src/problem12.rs"
+
+[[bin]]
+name = "problem13"
+path = "src/problem13.rs"
