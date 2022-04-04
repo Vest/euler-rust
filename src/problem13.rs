@@ -107,18 +107,29 @@ fn sum_input(input: &str) -> BigUint {
         .sum()
 }
 
-fn find_answer(num: &BigUint) -> String {
+fn find_answer(num: &BigUint, n: usize) -> String {
     let mut answer = num.to_string();
-    answer.truncate(10);
+    answer.truncate(n);
     answer
 }
 
 fn main() {
     let answer = sum_input(INPUT);
-    println!("Problem 13. Answer is {}", find_answer(&answer));
+    println!("Problem 14. Answer is {}", find_answer(&answer, 10));
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_sum_input() {
+        assert_eq!(sum_input("111\n222"), BigUint::from(333_u16));
+        assert_eq!(sum_input("999\n222"), BigUint::from(1221_u16));
+    }
+
+    #[test]
+    fn test_find_answer() {
+        assert_eq!(find_answer(&BigUint::from(333_u16), 2), "33");
+    }
 }
