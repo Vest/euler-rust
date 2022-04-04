@@ -1,11 +1,26 @@
-use primes::factors;
+struct TwoDivisor {
+    cur: usize,
+}
+
+impl Iterator for TwoDivisor {
+    type Item = usize;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.cur % 2 == 0 {
+            self.cur /= 2;
+            Some(self.cur)
+        } else {
+            None
+        }
+    }
+}
 
 fn find_answer() -> usize {
     0
 }
 
 fn u(n: i128) -> i128 {
-    v2((3 * s(n) + 4) as u64) as i128
+    v2((3 * s(n) + 4) as usize) as i128
 }
 
 fn un(n: i128) -> i128 {
@@ -14,11 +29,8 @@ fn un(n: i128) -> i128 {
         .sum()
 }
 
-fn v2(n: u64) -> usize {
-    factors(n)
-        .iter()
-        .filter(|&&d| d == 2)
-        .count()
+fn v2(n: usize) -> usize {
+    TwoDivisor { cur: n }.count()
 }
 
 fn s(n: i128) -> i128 {
@@ -63,6 +75,7 @@ mod tests {
 
     #[test]
     fn test_v2() {
+        assert_eq!(v2(1), 0);
         assert_eq!(v2(24), 3);
     }
 
