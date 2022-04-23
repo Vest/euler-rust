@@ -45,7 +45,7 @@ mod tests {
 
     #[test]
     fn test_collatz_iterator() {
-        let mut col = Collatz::new(13);
+        let col = Collatz::new(13);
         assert_eq!(col.count(), 10 - 1);
     }
 }
