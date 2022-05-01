@@ -29,3 +29,7 @@ path = "src/problem14.rs"
 [[bin]]
 name = "problem15"
 path = "src/problem15.rs"
+
+[[bin]]
+name = "problem16"
+path = "src/problem16.rs"
