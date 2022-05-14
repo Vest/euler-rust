@@ -5,27 +5,18 @@ fn build_word(i: usize) -> String {
 
     match converter.convert_number(i) {
         Ok(words) => {
-            if i > 100 {
+            if i > 100 && i % 100 != 0 {
                 let l = words.len();
-                if i % 10 != 0 {
-                    [
-                        // fix numerics, because it doesn't use "and". See the test test_build_word.
-                        &words[0..l - 2],
-                        &vec![String::from("and")],
-                        &words[l - 2..l]
-                    ]
-                        .concat()
-                        .concat()
-                } else {
-                    [
-                        // fix numerics, because it doesn't use "and". See the test test_build_word.
-                        &words[0..l - 1],
-                        &vec![String::from("and")],
-                        &words[l - 1..l]
-                    ]
-                        .concat()
-                        .concat()
-                }
+
+                let index = if i % 10 != 0 && i % 100 > 19 { 2 } else { 1 };
+                [
+                    // fix numerics, because it doesn't use "and". See the test test_build_word.
+                    &words[0..l - index],
+                    &vec![String::from("and")],
+                    &words[l - index..l]
+                ]
+                    .concat()
+                    .concat()
             } else {
                 words.join("")
             }
@@ -42,8 +33,8 @@ fn build_words(to: usize) -> String {
 
 
 fn main() {
-    //  let answer = get_answer(1000);
-    //  println!("Problem 16. The answer is {}.", answer);
+    let answer = build_words(1000);
+    println!("Problem 17. The answer is {}.", answer.len());
 }
 
 #[cfg(test)]
@@ -54,7 +45,15 @@ mod tests {
     fn test_build_word() {
         assert_eq!(build_word(5), "five");
         assert_eq!(build_word(342), "threehundredandfortytwo");
+        assert_eq!(build_word(342).len(), 23);
         assert_eq!(build_word(115), "onehundredandfifteen");
+        assert_eq!(build_word(115).len(), 20);
+        assert_eq!(build_word(111), "onehundredandeleven");
+        assert_eq!(build_word(119), "onehundredandnineteen");
+        assert_eq!(build_word(120), "onehundredandtwenty");
+        assert_eq!(build_word(130), "onehundredandthirty");
+        assert_eq!(build_word(999), "ninehundredandninetynine");
+        assert_eq!(build_word(1000), "onethousand");
     }
 
     #[test]
